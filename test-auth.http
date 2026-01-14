@@ -1,0 +1,193 @@
+### Authentication & Authorization Tests
+
+### Variables
+@baseUrl = http://localhost:5000
+@customerToken = 
+@adminToken = 
+
+###############################################
+# 1. REGISTER NEW CUSTOMER
+###############################################
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Alice Customer",
+  "email": "alice@example.com",
+  "password": "password123",
+  "role": "customer",
+  "phone": "1234567890",
+  "address": "123 Customer Street"
+}
+
+###############################################
+# 2. REGISTER NEW ADMIN
+###############################################
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Bob Admin",
+  "email": "bob@example.com",
+  "password": "adminpass123",
+  "role": "admin",
+  "phone": "0987654321",
+  "address": "456 Admin Avenue"
+}
+
+###############################################
+# 3. LOGIN AS CUSTOMER
+###############################################
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "password123"
+}
+
+# Copy the token from the response and set it in @customerToken variable above
+
+###############################################
+# 4. LOGIN AS ADMIN
+###############################################
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "bob@example.com",
+  "password": "adminpass123"
+}
+
+# Copy the token from the response and set it in @adminToken variable above
+
+###############################################
+# 5. GET CUSTOMER PROFILE (Authenticated)
+###############################################
+
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{customerToken}}
+
+###############################################
+# 6. GET ADMIN PROFILE (Authenticated)
+###############################################
+
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{adminToken}}
+
+###############################################
+# CUSTOMER ENDPOINTS TESTS
+###############################################
+
+### Get Customer's Cart
+GET {{baseUrl}}/cart
+Authorization: Bearer {{customerToken}}
+
+### Add Item to Cart
+POST {{baseUrl}}/cart/add
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "mobileId": "PUT_MOBILE_ID_HERE",
+  "quantity": 1
+}
+
+### Get Customer's Orders
+GET {{baseUrl}}/orders
+Authorization: Bearer {{customerToken}}
+
+###############################################
+# ADMIN ENDPOINTS TESTS
+###############################################
+
+### Get All Users (Admin Only)
+GET {{baseUrl}}/admin/users
+Authorization: Bearer {{adminToken}}
+
+### Get All Mobiles (Admin Only)
+GET {{baseUrl}}/admin/mobiles
+Authorization: Bearer {{adminToken}}
+
+### Create Mobile (Admin Only)
+POST {{baseUrl}}/admin/mobiles
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "brand": "Samsung",
+  "model": "Galaxy S23",
+  "price": 899.99,
+  "storage": "256GB",
+  "ram": "8GB",
+  "camera": "50MP + 12MP + 10MP",
+  "battery": "3900mAh",
+  "description": "Flagship Android smartphone",
+  "stock": 50,
+  "imageUrl": "https://example.com/galaxy-s23.jpg"
+}
+
+### Get All Orders (Admin Only)
+GET {{baseUrl}}/admin/orders
+Authorization: Bearer {{adminToken}}
+
+### Update Order Status (Admin Only)
+PUT {{baseUrl}}/admin/orders/PUT_ORDER_ID_HERE
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "shipped"
+}
+
+###############################################
+# NEGATIVE TESTS - Should FAIL
+###############################################
+
+### Try to access Admin endpoint with Customer token (Should return 403)
+GET {{baseUrl}}/admin/users
+Authorization: Bearer {{customerToken}}
+
+### Try to access protected endpoint without token (Should return 401)
+GET {{baseUrl}}/cart
+
+### Try to access with invalid token (Should return 401)
+GET {{baseUrl}}/cart
+Authorization: Bearer invalid_token_here
+
+###############################################
+# ERROR SCENARIOS
+###############################################
+
+### Register with existing email (Should return 400)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Another User",
+  "email": "alice@example.com",
+  "password": "password123",
+  "role": "customer"
+}
+
+### Login with wrong password (Should return 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "wrongpassword"
+}
+
+### Login with non-existent email (Should return 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "nonexistent@example.com",
+  "password": "password123"
+}

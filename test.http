@@ -1,0 +1,288 @@
+### Health Check
+GET http://localhost:5000/healthCheck
+
+### ========================================
+### AUTHENTICATION ROUTES
+### ========================================
+
+### Register Customer
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "role": "customer",
+  "phone": "1234567890",
+  "address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001"
+  }
+}
+
+### Register Admin
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "password": "admin123",
+  "role": "admin",
+  "phone": "9876543210",
+  "address": {
+    "street": "456 Admin St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10002"
+  }
+}
+
+### Login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+
+### Get User Profile
+GET http://localhost:5000/api/auth/profile/USER_ID_HERE
+
+### ========================================
+### CUSTOMER ROUTES - MOBILES
+### ========================================
+
+### Get All Mobiles (with pagination)
+GET http://localhost:5000/api/mobiles?page=1&limit=10
+
+### Get All Mobiles (with filtering by brand)
+GET http://localhost:5000/api/mobiles?brand=Apple&page=1&limit=10
+
+### Get All Mobiles (with price filtering)
+GET http://localhost:5000/api/mobiles?minPrice=500&maxPrice=1500
+
+### Get All Mobiles (with search)
+GET http://localhost:5000/api/mobiles?search=Samsung
+
+### Get Mobile by ID
+GET http://localhost:5000/api/mobiles/MOBILE_ID_HERE
+
+### Get Available Brands
+GET http://localhost:5000/api/mobiles/filters/brands
+
+### ========================================
+### CUSTOMER ROUTES - CART
+### ========================================
+
+### Get Cart
+GET http://localhost:5000/api/cart
+user-id: USER_ID_HERE
+
+### Add Item to Cart
+POST http://localhost:5000/api/cart/add
+Content-Type: application/json
+user-id: USER_ID_HERE
+
+{
+  "mobileId": "MOBILE_ID_HERE",
+  "quantity": 2
+}
+
+### Update Cart Item Quantity
+PUT http://localhost:5000/api/cart/update
+Content-Type: application/json
+user-id: USER_ID_HERE
+
+{
+  "mobileId": "MOBILE_ID_HERE",
+  "quantity": 3
+}
+
+### Remove Item from Cart
+DELETE http://localhost:5000/api/cart/remove/MOBILE_ID_HERE
+user-id: USER_ID_HERE
+
+### Clear Cart
+DELETE http://localhost:5000/api/cart/clear
+user-id: USER_ID_HERE
+
+### ========================================
+### CUSTOMER ROUTES - ORDERS
+### ========================================
+
+### Place Order
+POST http://localhost:5000/api/orders/place
+Content-Type: application/json
+user-id: USER_ID_HERE
+
+{
+  "shippingAddress": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA"
+  }
+}
+
+### Get My Orders
+GET http://localhost:5000/api/orders/my-orders?page=1&limit=10
+user-id: USER_ID_HERE
+
+### Get Specific Order
+GET http://localhost:5000/api/orders/ORDER_ID_HERE
+user-id: USER_ID_HERE
+
+### ========================================
+### ADMIN ROUTES - MOBILES
+### ========================================
+
+### Get All Mobiles (Admin - includes unavailable)
+GET http://localhost:5000/api/admin/mobiles?page=1&limit=10
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Add New Mobile
+POST http://localhost:5000/api/admin/mobiles/add
+Content-Type: application/json
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+{
+  "brand": "Apple",
+  "model": "iPhone 15 Pro",
+  "price": 999,
+  "specifications": {
+    "ram": "8GB",
+    "storage": "256GB",
+    "camera": "48MP Triple Camera",
+    "battery": "3274mAh",
+    "display": "6.1 inch OLED",
+    "processor": "A17 Pro"
+  },
+  "stock": 50,
+  "imageUrl": "https://example.com/iphone15pro.jpg",
+  "description": "Latest iPhone with advanced features",
+  "isAvailable": true
+}
+
+### Update Mobile
+PUT http://localhost:5000/api/admin/mobiles/update/MOBILE_ID_HERE
+Content-Type: application/json
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+{
+  "price": 899,
+  "stock": 75,
+  "description": "iPhone 15 Pro with updated pricing"
+}
+
+### Update Mobile Stock
+PATCH http://localhost:5000/api/admin/mobiles/stock/MOBILE_ID_HERE
+Content-Type: application/json
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+{
+  "stock": 100
+}
+
+### Toggle Mobile Availability
+PATCH http://localhost:5000/api/admin/mobiles/availability/MOBILE_ID_HERE
+Content-Type: application/json
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+{
+  "isAvailable": false
+}
+
+### Delete Mobile
+DELETE http://localhost:5000/api/admin/mobiles/delete/MOBILE_ID_HERE
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### ========================================
+### ADMIN ROUTES - ORDERS
+### ========================================
+
+### Get All Orders
+GET http://localhost:5000/api/admin/orders?page=1&limit=10
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Get Orders by Status
+GET http://localhost:5000/api/admin/orders?status=pending
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Get Order by ID
+GET http://localhost:5000/api/admin/orders/ORDER_ID_HERE
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Accept Order
+PATCH http://localhost:5000/api/admin/orders/accept/ORDER_ID_HERE
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Deliver Order
+PATCH http://localhost:5000/api/admin/orders/deliver/ORDER_ID_HERE
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Cancel Order
+PATCH http://localhost:5000/api/admin/orders/cancel/ORDER_ID_HERE
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Get Order Statistics
+GET http://localhost:5000/api/admin/orders/stats/overview
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### ========================================
+### ADMIN ROUTES - USERS
+### ========================================
+
+### Get All Users
+GET http://localhost:5000/api/admin/users
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Get Users by Role
+GET http://localhost:5000/api/admin/users?role=customer
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Get User by ID
+GET http://localhost:5000/api/admin/users/USER_ID_HERE
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Update User
+PUT http://localhost:5000/api/admin/users/update/USER_ID_HERE
+Content-Type: application/json
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+{
+  "name": "Updated Name",
+  "phone": "9999999999"
+}
+
+### Delete User
+DELETE http://localhost:5000/api/admin/users/delete/USER_ID_HERE
+user-id: ADMIN_USER_ID_HERE
+user-role: admin
+
+### Get User Statistics
+GET http://localhost:5000/api/admin/users/stats/overview
+user-id: ADMIN_USER_ID_HERE
+user-role: admin

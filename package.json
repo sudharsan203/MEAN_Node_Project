@@ -1,0 +1,27 @@
+{
+  "name": "sample_node_js_project",
+  "version": "1.0.0",
+  "description": "Learning Node JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.0.0",
+    "url": "^0.11.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
